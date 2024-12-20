@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/Group1">
+        <item
+            android:id="@+id/DestHome"
+            android:icon="@drawable/home_icon"
+            android:title="Home" />
+        <item
+            android:id="@+id/DestProfile"
+            android:icon="@drawable/profile_icon"
+            android:title="Profile" />
+        <item
+            android:id="@+id/DestArticle"
+            android:icon="@drawable/article_icon"
+            android:title="Article" />
+        <item
+            android:id="@+id/DestQuiz"
+            android:icon="@drawable/quiz_icon"
+            android:title="Quiz" />
+        <item
+            android:id="@+id/DestForum"
+            android:icon="@drawable/forum_icon"
+            android:title="Forum" />
+        <item
+            android:id="@+id/DestScreenRecord"
+            android:icon="@drawable/badge_icon"
+            android:title="Screen Record and Badges" />
+        <item
+            android:id="@+id/DestNotifications"
+            android:icon="@drawable/notifications_icon"
+            android:title="Notification" />
+    </group>
+    <group android:id="@+id/Group2">
+        <item
+            android:id="@+id/DestLogout"
+            android:icon="@drawable/logout_icon"
+            android:title="Log out" />
+    </group>
+</menu>

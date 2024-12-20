@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "282349929176",
+    "project_id": "sciquest-6205a",
+    "storage_bucket": "sciquest-6205a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282349929176:android:81f0a7cfa4392d19088dad",
+        "android_client_info": {
+          "package_name": "com.example.sciquest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDanChs3Z7fCva1JURJbmEnqWZ0t_VYRb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

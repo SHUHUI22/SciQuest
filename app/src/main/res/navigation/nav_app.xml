@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_app"
+    app:startDestination="@id/DestHome">
+
+    <fragment
+        android:id="@+id/DestHome"
+        android:name="com.example.sciquest.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/DestProfile"
+        android:name="com.example.sciquest.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/DestUploadProfilePic"
+        android:name="com.example.sciquest.UploadProfilePicFragment"
+        android:label="fragment_upload_profile_pic"
+        tools:layout="@layout/fragment_upload_profile_pic" />
+    <fragment
+        android:id="@+id/DestEditProfile"
+        android:name="com.example.sciquest.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
+    <activity
+        android:id="@+id/DestLogin"
+        android:name="com.example.sciquest.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
+    <fragment
+        android:id="@+id/DestForum"
+        android:name="com.example.sciquest.ForumFragment"
+        android:label="ForumFragment" />
+    <fragment
+        android:id="@+id/DestQuiz"
+        android:name="com.example.sciquest.QuizListFragment"
+        android:label="fragment_quiz"
+        tools:layout="@layout/fragment_quiz_list" />
+    <fragment
+        android:id="@+id/DestArticle"
+        android:name="com.example.sciquest.ArticleFragment"
+        android:label="fragment_article"
+        tools:layout="@layout/fragment_article" />
+    <fragment
+        android:id="@+id/DestStartQuiz"
+        android:name="com.example.sciquest.StartQuizFragment"
+        android:label="fragment_start_quiz"
+        tools:layout="@layout/fragment_start_quiz" />
+</navigation>

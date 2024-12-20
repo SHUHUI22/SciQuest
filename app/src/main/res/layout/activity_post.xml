@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/secondaryColor"
+    tools:context=".PostActivity">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/primaryColor"
+        app:titleTextColor="#000"
+        app:titleTextAppearance="@style/TextAppearance.AppCompat.Large"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/back_icon" />
+
+            <TextView
+                android:id="@+id/titleOfPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="120dp"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:text="Upload Post"
+                android:textSize="35sp"
+                android:textStyle="bold" />
+
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Image Upload Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Upload Button -->
+        <LinearLayout
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/background_uploadpost"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/uploadIcon"
+                android:layout_width="90dp"
+                android:layout_height="95dp"
+                android:contentDescription="Upload Icon"
+                android:src="@drawable/upload_icon" />
+
+            <TextView
+                android:id="@+id/uploadImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:gravity="center"
+                android:text="Upload Image"
+                android:textColor="#000"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <!-- Uploaded Image Preview -->
+        <ImageView
+            android:id="@+id/sampleImage"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginLeft="16dp"
+            android:contentDescription="Uploaded Image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/pic_upload1" />
+    </LinearLayout>
+
+
+    <!-- Insert Title Section -->
+    <TextView
+        android:id="@+id/insertTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="40dp"
+        android:text="Insert title/description:"
+        android:textColor="#000"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="360dp"
+        android:layout_height="250dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/edit_background"
+        android:gravity="start|top"
+        android:hint="  Enter title/description..."
+        android:inputType="text"
+        android:textColor="#0D0D0D"
+        android:textSize="17sp"
+        android:padding="12dp"/>
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="260dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="5dp"
+        android:backgroundTint="@color/primaryColor"
+        android:text="Submit Post"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+</LinearLayout>
