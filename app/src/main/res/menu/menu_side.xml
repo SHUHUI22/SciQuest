@@ -14,7 +14,7 @@
             android:icon="@drawable/article_icon"
             android:title="Article" />
         <item
-            android:id="@+id/DestQuiz"
+            android:id="@+id/DestQuizList"
             android:icon="@drawable/quiz_icon"
             android:title="Quiz" />
         <item

@@ -35,7 +35,7 @@
         android:name="com.example.sciquest.ForumFragment"
         android:label="ForumFragment" />
     <fragment
-        android:id="@+id/DestQuiz"
+        android:id="@+id/DestQuizList"
         android:name="com.example.sciquest.QuizListFragment"
         android:label="fragment_quiz"
         tools:layout="@layout/fragment_quiz_list" />
@@ -49,4 +49,19 @@
         android:name="com.example.sciquest.StartQuizFragment"
         android:label="fragment_start_quiz"
         tools:layout="@layout/fragment_start_quiz" />
+    <fragment
+        android:id="@+id/DestQuiz"
+        android:name="com.example.sciquest.QuizFragment"
+        android:label="fragment_quiz"
+        tools:layout="@layout/fragment_quiz" />
+    <fragment
+        android:id="@+id/DestResult"
+        android:name="com.example.sciquest.ResultFragment"
+        android:label="fragment_result"
+        tools:layout="@layout/fragment_result" />
+    <fragment
+        android:id="@+id/DestReview"
+        android:name="com.example.sciquest.ReviewFragment"
+        android:label="fragment_review"
+        tools:layout="@layout/fragment_review" />
 </navigation>

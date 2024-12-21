@@ -69,7 +69,7 @@ public class QuizListFragment extends Fragment {
         List<Topic> list = new ArrayList<>(); // Create an empty list
 
         // Add quiz topics with titles and images
-        list.add(new Topic("Disease and Disorder", R.drawable.disease_and_disorder_topic));
+        list.add(new Topic("Disease And Disorder", R.drawable.disease_and_disorder_topic));
         list.add(new Topic("Photosynthesis", R.drawable.photosynthesis_topic));
         list.add(new Topic("Organic Chemistry", R.drawable.organic_chemistry_topic));
         list.add(new Topic("Respiratory System",R.drawable.respiratory_system_topic));

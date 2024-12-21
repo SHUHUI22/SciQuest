@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Large"
-        app:titleTextColor="#000">
+        app:titleTextColor="@color/black">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -63,39 +63,41 @@
 
     <TextView
         android:id="@+id/TVDescription"
-        android:layout_width="wrap_content"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:text="Description"
-        android:textSize="26sp"
+        android:layout_marginBottom="15dp"
+        android:text="Test your knowledge with the first attempt!"
+        android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/BtnStart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/IVTopic"
-        app:layout_constraintVertical_bias="0.393" />
+        app:layout_constraintVertical_bias="0.611" />
 
     <Button
         android:id="@+id/BtnReview"
         android:layout_width="260dp"
         android:layout_height="64dp"
-        android:layout_marginBottom="128dp"
+        android:layout_marginBottom="96dp"
         android:backgroundTint="@color/primaryColor"
         android:text="Review Answer"
-        android:textColor="#000000"
+        android:textColor="@color/black"
         android:textSize="24sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/BtnStart"
         android:layout_width="260dp"
         android:layout_height="64dp"
-        android:layout_marginBottom="248dp"
+        android:layout_marginBottom="200dp"
         android:backgroundTint="@color/primaryColor"
         android:text="Start Attempt"
-        android:textColor="#000000"
+        android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

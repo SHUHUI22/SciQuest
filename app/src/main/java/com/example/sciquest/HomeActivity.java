@@ -48,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Set up the app bar configuration
         drawerLayout = findViewById(R.id.DLMain);
-        appBarConfiguration = new AppBarConfiguration.Builder(R.id.DestHome,R.id.DestProfile,R.id.DestForum,R.id.DestQuiz, R.id.DestArticle).setOpenableLayout(drawerLayout).build();
+        appBarConfiguration = new AppBarConfiguration.Builder(R.id.DestHome,R.id.DestProfile,R.id.DestForum,R.id.DestQuizList, R.id.DestArticle).setOpenableLayout(drawerLayout).build();
         NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration);
 
         // Set up the drawer layout and toggle
@@ -85,8 +85,8 @@ public class HomeActivity extends AppCompatActivity {
                 else if(selectedId == R.id.DestForum){
                     navController.navigate(R.id.DestForum);
                 }
-                else if(selectedId == R.id.DestQuiz){
-                    navController.navigate(R.id.DestQuiz);
+                else if(selectedId == R.id.DestQuizList){
+                    navController.navigate(R.id.DestQuizList);
                 }
                 else if(selectedId == R.id.DestArticle){
                     navController.navigate(R.id.DestArticle);
