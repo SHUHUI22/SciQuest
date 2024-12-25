@@ -36,6 +36,7 @@ public class ForumFragment extends Fragment {
     private FloatingActionButton BtnAddPost;
     private FirebaseAuth auth;
     private FirebaseUser firebaseUser;
+    private ScreenManager screenManager;
 
     public ForumFragment() {
         // Required empty public constructor

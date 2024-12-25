@@ -64,4 +64,9 @@
         android:name="com.example.sciquest.ReviewFragment"
         android:label="fragment_review"
         tools:layout="@layout/fragment_review" />
+    <fragment
+        android:id="@+id/DestScreenRecord"
+        android:name="com.example.sciquest.ScreenTimeAndBadgeFragment"
+        android:label="fragment_screen_time_and_badge"
+        tools:layout="@layout/fragment_screen_time_and_badge" />
 </navigation>

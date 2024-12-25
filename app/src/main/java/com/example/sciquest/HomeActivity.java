@@ -33,11 +33,13 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseUser user = mAuth.getCurrentUser();
     private TextView TVHeaderUsername;
     private ImageView IVProfilePic;
+    private ScreenManager screenManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        screenManager = new ScreenManager(this);
 
         Toolbar toolbar = findViewById(R.id.TBHome);
         setSupportActionBar(toolbar);
@@ -48,7 +50,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Set up the app bar configuration
         drawerLayout = findViewById(R.id.DLMain);
-        appBarConfiguration = new AppBarConfiguration.Builder(R.id.DestHome,R.id.DestProfile,R.id.DestForum,R.id.DestQuizList, R.id.DestArticle).setOpenableLayout(drawerLayout).build();
+        appBarConfiguration = new AppBarConfiguration.Builder(R.id.DestHome,R.id.DestProfile,R.id.DestForum,R.id.DestQuizList, R.id.DestArticle, R.id.DestScreenRecord).setOpenableLayout(drawerLayout).build();
         NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration);
 
         // Set up the drawer layout and toggle
@@ -71,6 +73,10 @@ public class HomeActivity extends AppCompatActivity {
         IVProfilePic = sideNav.getHeaderView(0).findViewById(R.id.IVProfilePic);
         fetchAndSetUsername();
 
+        // Start screen time tracking when user logs in
+        screenManager.startScreenTimeTracking();
+        Long startTime = screenManager.getStartTime();
+
         sideNav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -91,7 +97,17 @@ public class HomeActivity extends AppCompatActivity {
                 else if(selectedId == R.id.DestArticle){
                     navController.navigate(R.id.DestArticle);
                 }
+                else if (selectedId == R.id.DestScreenRecord){
+                    // Pass the startTime to the fragment
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("startTime", startTime);
+                    navController.navigate(R.id.DestScreenRecord,bundle);
+                }
                 else if (selectedId == R.id.DestLogout){
+                    // Stop tracking screen time
+                    String today = screenManager.getCurrentDate();
+                    screenManager.stopScreenTimeTracking(today);
+
                     FirebaseAuth.getInstance().signOut();
                     navController.navigate(R.id.DestLogin);
                     finish();
