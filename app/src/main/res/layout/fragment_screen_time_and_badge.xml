@@ -136,6 +136,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
+        android:visibility="visible"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -153,14 +154,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="8dp">
+                android:padding="4dp"
+                android:layout_margin="8dp">
 
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_margin="8dp"
                     android:contentDescription="Badge image"
-                    android:src="@drawable/seven_days_badge" />
+                    android:src="@drawable/seven_days_badge"
+                    android:visibility="invisible" />
 
             </LinearLayout>
         </HorizontalScrollView>

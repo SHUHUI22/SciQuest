@@ -50,7 +50,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Set up the app bar configuration
         drawerLayout = findViewById(R.id.DLMain);
-        appBarConfiguration = new AppBarConfiguration.Builder(R.id.DestHome,R.id.DestProfile,R.id.DestForum,R.id.DestQuizList, R.id.DestArticle, R.id.DestScreenRecord).setOpenableLayout(drawerLayout).build();
+        appBarConfiguration = new AppBarConfiguration.Builder(R.id.DestHome,R.id.DestProfile,R.id.DestForum,R.id.DestQuizList, R.id.DestArticle, R.id.DestScreenRecord, R.id.DestNotifications).setOpenableLayout(drawerLayout).build();
         NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration);
 
         // Set up the drawer layout and toggle
@@ -102,6 +102,12 @@ public class HomeActivity extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     bundle.putLong("startTime", startTime);
                     navController.navigate(R.id.DestScreenRecord,bundle);
+                }
+                else if(selectedId == R.id.DestNotifications){
+                    // Pass the startTime to the fragment
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("startTime", startTime);
+                    navController.navigate(R.id.DestNotifications,bundle);
                 }
                 else if (selectedId == R.id.DestLogout){
                     // Stop tracking screen time

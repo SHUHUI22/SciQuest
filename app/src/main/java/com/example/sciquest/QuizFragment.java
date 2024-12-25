@@ -11,6 +11,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +56,7 @@ public class QuizFragment extends Fragment {
     private boolean[] questionPass, isCorrect;
     private String[] userAnswers;
     private int score=0, correctAnswersCount=0, wrongAnswersCount=0, unansweredCount=0;
+    private boolean firstTimeAttempt;
 
     public QuizFragment() {
         // Required empty public constructor
@@ -101,6 +106,12 @@ public class QuizFragment extends Fragment {
             } else {
                 // Save the user answer to Firestore
                 saveQuizAttempt();
+
+                // award badge when attempt score is >= 80
+                if(score>=80){
+                    addNotification(topic,score);
+                    awardBadge();
+                }
 
                 // Navigate to result page
                 ResultFragment resultFragment = new ResultFragment();
@@ -396,6 +407,90 @@ public class QuizFragment extends Fragment {
         }
 
         return answerList;
+    }
+
+    private void awardBadge() {
+        String userId = user.getUid();
+        DocumentReference badgeRef = db.collection("Badge").document(userId);
+
+        badgeRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    long currentQuizGradeACount = document.getLong("quizGradeACount")!= null ? document.getLong("quizGradeACount") : 0;
+                    // If the badge document exists, increment the quizGradeACountCount
+                    badgeRef.update("quizGradeACount", (currentQuizGradeACount+1))
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("Quiz Grade A count", "Quiz Grade A count updated");
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(requireContext(), "Failed to update quiz Grade A count.", Toast.LENGTH_SHORT).show();
+                                Log.d("Quiz completed count", "Failed to update quiz Grade A count");
+                            });
+                } else {
+                    // If no badge document exists, create one and set quizGradeACount to 1
+                    badgeRef.set(new HashMap<String, Object>() {{
+                                put("quizGradeACount", 1); // First streak
+                            }})
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("Badge", "Badge document created with quizGradeACount set to 1");
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(requireContext(), "Failed to create badge document.", Toast.LENGTH_SHORT).show();
+                                Log.d("Badge", "Failed to create badge document");
+                            });
+                }
+            } else {
+                Log.d("Award Badge", "Failed to retrieve badge document", task.getException());
+            }
+        });
+    }
+
+    private void addNotification(String title, long score) {
+        String userId = user.getUid();
+
+        Map<String, Object> notificationData = new HashMap<>();
+        notificationData.put("title", "Well Done, you passed a quiz with grade A !");
+        notificationData.put("message", "Congratulations! You've passed a quiz of the topic \""+ topic +"\" with "+score +" marks. You've unlocked a Genious badge.");
+        notificationData.put("isRead", false); // Default to unread
+        notificationData.put("timestamp", FieldValue.serverTimestamp()); // Set timestamp
+
+        DocumentReference notificationRef = db.collection("Notification").document(userId);
+
+        notificationRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // User's Notification document exists, add a new notification
+                    notificationRef.collection("UserNotifications")
+                            .add(notificationData)
+                            .addOnSuccessListener(docRef -> {
+                                Log.d("Notification", "Notification added successfully: " + docRef.getId());
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("Notification", "Error adding notification", e);
+                            });
+                } else {
+                    // Create user's Notification document if it doesn't exist, then add notification
+                    notificationRef.set(new HashMap<>()) // Initialize empty user document
+                            .addOnSuccessListener(aVoid -> {
+                                notificationRef.collection("UserNotifications")
+                                        .add(notificationData)
+                                        .addOnSuccessListener(docRef -> {
+                                            Log.d("Notification", "Notification added successfully after initializing: " + docRef.getId());
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e("Notification", "Error adding notification", e);
+                                        });
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("Notification", "Error creating user notification document", e);
+                            });
+                }
+            } else {
+                Log.e("Notification", "Failed to fetch user notification document", task.getException());
+            }
+        });
     }
 
     @Override

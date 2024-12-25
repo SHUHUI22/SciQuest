@@ -17,28 +17,33 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ScreenTimeAndBadgeFragment extends Fragment {
 
     private CalendarView calendarView;
-    private TextView TVDate, TVDailyTime, TVScreenDescription2, TVBadge;
+    private TextView TVDate, TVDailyTime, TVScreenDescription2;
     private ImageView IMCalendar, IVScreen;
     private LinearLayout LinearLayoutBadge;
-    private ScreenManager screenManager;
+    private ScreenManager screenManager =  new ScreenManager(getContext());;
     private BadgeManager badgeManager;
     private FirebaseFirestore db = FirebaseFirestore.getInstance() ;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
-    private Long weeklyScreenTimeFetched;
-    private List<String> fetchedBadges; // Store the fetched badges
+    private Long weeklyScreenTimeFetched, startTime, totalDailyScreenTime;
+    private boolean update = true;
 
     public ScreenTimeAndBadgeFragment() {
         // Required empty public constructor
@@ -55,9 +60,7 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        screenManager = new ScreenManager(getContext());
         badgeManager = new BadgeManager();
-        fetchedBadges = new ArrayList<>();
 
         TVDate = view.findViewById(R.id.TVDate);
         TVDailyTime = view.findViewById(R.id.TVDailyTime);
@@ -65,14 +68,13 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
         IMCalendar = view.findViewById(R.id.IMCalendar);
         IVScreen = view.findViewById(R.id.IVScreen);
         calendarView = view.findViewById(R.id.calendarView);
-        TVBadge = view.findViewById(R.id.TVBadge);
         LinearLayoutBadge = view.findViewById(R.id.LinearLayoutBadge);
 
         calendarView.setVisibility(View.GONE);
 
         // Retrieve startTime
         Bundle bundle = getArguments();
-        long startTime = bundle.getLong("startTime");
+        startTime = bundle.getLong("startTime");
 
         // Get the current date in yyyy-MM-dd format
         String currentDate = screenManager.getCurrentDate();
@@ -139,28 +141,21 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
         });
 
         // Badge
-//        badgeManager.updateBadges(userId, new BadgeManager.OnStreakCalculatedListener() {
-//            @Override
-//            public void onStreakCalculated(boolean isConsecutive) {
-//                // You can pass additional logic here if necessary, for example:
-//                if (isConsecutive) {
-//                    // Call the method to fetch badges
-//                    badgeManager.fetchBadges(userId, new BadgeManager.OnBadgesFetchedListener() {
-//                        @Override
-//                        public void onBadgesFetched(List<String> badges) {
-//                            displayBadges(badges);
-//                        }
-//                    });
-//                }
-//            }
-//        });
-
-        // Fetch the badges
-        fetchBadges();
-        System.out.println(fetchedBadges);
-
-        // Display the badges
-        displayBadges(fetchedBadges);
+        badgeManager.updateBadges(userId, new BadgeManager.OnStreakCalculatedListener() {
+            @Override
+            public void onStreakCalculated(boolean isConsecutive) {
+                // You can pass additional logic here if necessary, for example:
+                if (isConsecutive) {
+                    // Call the method to fetch badges
+                    badgeManager.fetchBadges(userId, new BadgeManager.OnBadgesFetchedListener() {
+                        @Override
+                        public void onBadgesFetched(List<String> badges) {
+                            displayBadges(badges);
+                        }
+                    });
+                }
+            }
+        });
 
         // Set the action bar title
         if (getActivity() != null) {
@@ -174,9 +169,11 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
             public void onScreenTimeFetched(Long screenTime) {
                // Fetch time spend in previous session in the same day and add with time spend in current session
                 Long currentTime = System.currentTimeMillis();
-                Long currentScreenTimeSession = (currentTime - startTime)/60000;
-                Long totalScreenTime = screenTime + currentScreenTimeSession;
-                TVDailyTime.setText(totalScreenTime.toString() + " minutes");
+                Long currentSessionScreenTime = (currentTime - startTime)/60000;
+                totalDailyScreenTime = screenTime + currentSessionScreenTime;
+                TVDailyTime.setText(totalDailyScreenTime.toString() + " minutes");
+                addNotification(totalDailyScreenTime, update);
+                update = false;
             }
         });
     }
@@ -217,49 +214,74 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
         void onWeeklyScreenTimeCalculated(long weeklyScreenTime);
     }
 
-    // Method to fetch badges before displaying
-    private void fetchBadges() {
-        String userId = user.getUid();
-        // Update badges based on streak calculation
-        badgeManager.updateBadges(userId, new BadgeManager.OnStreakCalculatedListener() {
-            @Override
-            public void onStreakCalculated(boolean isConsecutive) {
-                if (isConsecutive) {
-                    // Fetch badges after streak is confirmed
-                    badgeManager.fetchBadges(userId, new BadgeManager.OnBadgesFetchedListener() {
-                        @Override
-                        public void onBadgesFetched(List<String> badges) {
-                            // Store the fetched badges
-                            fetchedBadges.addAll(badges);
-                            Log.d("Badges", "Fetched badges: " + badges); // Debug log to verify
-                        }
-                    });
-                }
-            }
-        });
-    }
-
     private void displayBadges(List<String> badges) {
-        System.out.println("hi");
         // Clear the previous badges
         LinearLayoutBadge.removeAllViews();
 
         // Iterate over the list of badges and add them to the layout
         for (String badge : badges) {
             ImageView badgeImage = new ImageView(getContext());
-            Log.d("Badges", "Adding badge: " + badge); // Debug log to verify
 
             // Set image resource based on badge type
             switch (badge) {
                 case "SevenDaysStreak":
-                    badgeImage.setImageResource(R.drawable.seven_days_badge); // Replace with actual drawable
+                    badgeImage.setImageResource(R.drawable.seven_days_badge);
                     break;
-                case "QuizCompleted":
-                    badgeImage.setImageResource(R.drawable.genius_badge); // Replace with actual drawable
+                case "QuizGradeA":
+                    badgeImage.setImageResource(R.drawable.genious_badge);
                     break;
             }
             // Add the badge to the LinearLayout
             LinearLayoutBadge.addView(badgeImage);
+        }
+    }
+
+    private void addNotification(Long totalDailyScreenTime, boolean update) {
+        if (totalDailyScreenTime>=120 && update == true){
+            String userId = user.getUid();
+
+            Map<String, Object> notificationData = new HashMap<>();
+            notificationData.put("title", "Take a rest !");
+            notificationData.put("message", "You've studied for 2 hours! Remember to drink water. Rest is not a waste of time. It's necessary! ");
+            notificationData.put("isRead", false); // Default to unread
+            notificationData.put("timestamp", FieldValue.serverTimestamp()); // Set timestamp
+
+            DocumentReference notificationRef = db.collection("Notification").document(userId);
+
+            notificationRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // User's Notification document exists, add a new notification
+                        notificationRef.collection("UserNotifications")
+                                .add(notificationData)
+                                .addOnSuccessListener(docRef -> {
+                                    Log.d("Notification", "Notification added successfully: " + docRef.getId());
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("Notification", "Error adding notification", e);
+                                });
+                    } else {
+                        // Create user's Notification document if it doesn't exist, then add notification
+                        notificationRef.set(new HashMap<>()) // Initialize empty user document
+                                .addOnSuccessListener(aVoid -> {
+                                    notificationRef.collection("UserNotifications")
+                                            .add(notificationData)
+                                            .addOnSuccessListener(docRef -> {
+                                                Log.d("Notification", "Notification added successfully after initializing: " + docRef.getId());
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e("Notification", "Error adding notification", e);
+                                            });
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("Notification", "Error creating user notification document", e);
+                                });
+                    }
+                } else {
+                    Log.e("Notification", "Failed to fetch user notification document", task.getException());
+                }
+            });
         }
     }
 }

@@ -69,4 +69,9 @@
         android:name="com.example.sciquest.ScreenTimeAndBadgeFragment"
         android:label="fragment_screen_time_and_badge"
         tools:layout="@layout/fragment_screen_time_and_badge" />
+    <fragment
+        android:id="@+id/DestNotifications"
+        android:name="com.example.sciquest.NotificationFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notification" />
 </navigation>

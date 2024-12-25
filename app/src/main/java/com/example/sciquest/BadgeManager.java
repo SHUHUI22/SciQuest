@@ -1,8 +1,12 @@
 package com.example.sciquest;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -11,12 +15,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BadgeManager {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance() ;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
+    private boolean loadNotification = false;
 
     // Listener for streak calculation
     public interface OnStreakCalculatedListener {
@@ -50,7 +56,6 @@ public class BadgeManager {
             last7Days.add(dateFormat.format(calendar.getTime()));
             calendar.add(Calendar.DAY_OF_YEAR, -1);
         }
-        System.out.println(last7Days);
 
         // Fetch user's screen time data for the last 7 days
         db.collection("ScreenRecord")
@@ -71,75 +76,82 @@ public class BadgeManager {
                             break;
                         }
                     }
-                    System.out.println(isConsecutive);
 
-                    if (isConsecutive) {
-                        // If the user has achieved a consecutive 7-day streak
-                        updateBadgeCount(userId);
-                    }
+//                    if (isConsecutive) {
+//                        // If the user has achieved a consecutive 7-day streak
+//                        updateBadgeCount(userId);
+//                    }
 
                     listener.onStreakCalculated(isConsecutive);
                 });
     }
 
     private void updateBadgeCount(String userId) {
-        DocumentReference badgeRef = db.collection("badge").document(userId);
+        DocumentReference badgeRef = db.collection("Badge").document(userId);
 
         badgeRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 // Fetch last earned badge date
-                String lastBadgeEarnedDate = documentSnapshot.getString("lastBadgeEarnedDate");
+                String last7streakBadgeEarnedDate = documentSnapshot.getString("last7streakBadgeEarnedDate");
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String today = dateFormat.format(Calendar.getInstance().getTime());
 
                 // If there is no last earned date or if 7 days have passed since the last badge was earned
-                if (lastBadgeEarnedDate != null && !lastBadgeEarnedDate.equals(today)) {
+                if (last7streakBadgeEarnedDate != null && !last7streakBadgeEarnedDate.equals(today)) {
                     // Check if exactly 7 days have passed since last earned badge
                     try {
-                        long diffInMillis = dateFormat.parse(today).getTime() - dateFormat.parse(lastBadgeEarnedDate).getTime();
+                        long diffInMillis = dateFormat.parse(today).getTime() - dateFormat.parse(last7streakBadgeEarnedDate).getTime();
                         long diffInDays = diffInMillis / (24 * 60 * 60 * 1000);  // Convert milliseconds to days
 
                         // Only award the badge if 7 days have passed
                         if (diffInDays >= 7) {
+                            loadNotification = true;
                             // Update the badge earned date and increment streak count
-                            badgeRef.update("lastBadgeEarnedDate", today);
+                            badgeRef.update("last7streakBadgeEarnedDate", today);
 
                             // Optionally, increment streak count
-                            long currentStreakCount = documentSnapshot.getLong("streak.streakCount") != null
-                                    ? documentSnapshot.getLong("streak.streakCount")
+                            long current7StreakCount = documentSnapshot.getLong("7streakCount") != null
+                                    ? documentSnapshot.getLong("7streakCount")
                                     : 0;
 
-                            badgeRef.update("streak.streakCount", currentStreakCount + 1);
+                            badgeRef.update("7streakCount", current7StreakCount + 1);
+                            addNotification();
                         }
+//                        else {
+//                            loadNotification = false;
+//                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             } else {
+//                loadNotification = true;
                 // If no badge document exists, create one and set first badge date
                 badgeRef.set(new HashMap<String, Object>() {{
-                    put("lastBadgeEarnedDate", new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
-                    put("streak", new HashMap<String, Object>() {{
-                        put("streakCount", 1); // First streak
-                    }});
+                    put("last7streakBadgeEarnedDate", new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
+                    put("7streakCount", 1); // First streak
                 }});
+                addNotification();
             }
         });
+//        if (loadNotification){
+//            addNotification();
+//        }
     }
 
     // Method to fetch badges based on streak count and quiz completion
     public void fetchBadges(String userId, OnBadgesFetchedListener listener) {
-        db.collection("badge")
+        db.collection("Badge")
                 .document(userId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    long streakCount = documentSnapshot.getLong("streak.streakCount") != null
-                            ? documentSnapshot.getLong("streak.streakCount")
+                    long streakCount = documentSnapshot.getLong("7streakCount") != null
+                            ? documentSnapshot.getLong("7streakCount")
                             : 0;
-//                    long quizCompletedCount = documentSnapshot.getLong("quiz.quizCompletedCount") != null
-//                            ? documentSnapshot.getLong("quiz.quizCompletedCount")
-//                            : 0;
+                    long quizGradeACount = documentSnapshot.getLong("quizGradeACount") != null
+                            ? documentSnapshot.getLong("quizGradeACount")
+                            : 0;
 
                     List<String> badges = new ArrayList<>();
 
@@ -148,13 +160,60 @@ public class BadgeManager {
                         badges.add("SevenDaysStreak");
                     }
 
-//                    // Add quiz badges based on quiz completed count
-//                    for (int i = 1; i <= quizCompletedCount; i++) {
-//                        badges.add("QuizCompleted");
-//                    }
+                    // Add quiz badges based on quiz GradeA completed count
+                    for (int i = 1; i <= quizGradeACount; i++) {
+                        badges.add("QuizGradeA");
+                    }
 
                     listener.onBadgesFetched(badges);
                 })
                 .addOnFailureListener(e -> listener.onBadgesFetched(new ArrayList<>()));
+    }
+
+    private void addNotification() {
+        String userId = user.getUid();
+
+        Map<String, Object> notificationData = new HashMap<>();
+        notificationData.put("title", "Great news, you've achieved streak of 7 days !");
+        notificationData.put("message", "You've maintained a 7-day streak, keep it up! A badge of seven-days streak is unlocked.");
+        notificationData.put("isRead", false); // Default to unread
+        notificationData.put("timestamp", FieldValue.serverTimestamp()); // Set timestamp
+
+        DocumentReference notificationRef = db.collection("Notification").document(userId);
+
+        notificationRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // User's Notification document exists, add a new notification
+                    notificationRef.collection("UserNotifications")
+                            .add(notificationData)
+                            .addOnSuccessListener(docRef -> {
+                                Log.d("Notification", "Notification added successfully: " + docRef.getId());
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("Notification", "Error adding notification", e);
+                            });
+                } else {
+                    // Create user's Notification document if it doesn't exist, then add notification
+                    notificationRef.set(new HashMap<>()) // Initialize empty user document
+                            .addOnSuccessListener(aVoid -> {
+                                notificationRef.collection("UserNotifications")
+                                        .add(notificationData)
+                                        .addOnSuccessListener(docRef -> {
+                                            Log.d("Notification", "Notification added successfully after initializing: " + docRef.getId());
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e("Notification", "Error adding notification", e);
+                                        });
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("Notification", "Error creating user notification document", e);
+                            });
+                }
+            } else {
+                Log.e("Notification", "Failed to fetch user notification document", task.getException());
+            }
+        });
     }
 }

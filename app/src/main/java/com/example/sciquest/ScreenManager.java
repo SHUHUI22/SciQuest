@@ -36,7 +36,6 @@ public class ScreenManager {
 
     public void startScreenTimeTracking() {
         startTime = System.currentTimeMillis();
-        System.out.println("Start log "+startTime);// Get start time
     }
 
     // Get the current date in yyyy-MM-dd format
