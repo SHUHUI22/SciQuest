@@ -54,4 +54,7 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     //implementation (libs.ucrop)
 
+    implementation ("com.squareup.picasso:picasso:2.8")
+
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
 }

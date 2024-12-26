@@ -10,7 +10,7 @@
             android:icon="@drawable/profile_icon"
             android:title="Profile" />
         <item
-            android:id="@+id/DestArticle"
+            android:id="@+id/DestArticleList"
             android:icon="@drawable/article_icon"
             android:title="Article" />
         <item

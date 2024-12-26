@@ -50,7 +50,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Set up the app bar configuration
         drawerLayout = findViewById(R.id.DLMain);
-        appBarConfiguration = new AppBarConfiguration.Builder(R.id.DestHome,R.id.DestProfile,R.id.DestForum,R.id.DestQuizList, R.id.DestArticle, R.id.DestScreenRecord, R.id.DestNotifications).setOpenableLayout(drawerLayout).build();
+        appBarConfiguration = new AppBarConfiguration.Builder(R.id.DestHome,R.id.DestProfile,R.id.DestForum,R.id.DestQuizList, R.id.DestArticleList, R.id.DestScreenRecord, R.id.DestNotifications).setOpenableLayout(drawerLayout).build();
         NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration);
 
         // Set up the drawer layout and toggle
@@ -94,8 +94,8 @@ public class HomeActivity extends AppCompatActivity {
                 else if(selectedId == R.id.DestQuizList){
                     navController.navigate(R.id.DestQuizList);
                 }
-                else if(selectedId == R.id.DestArticle){
-                    navController.navigate(R.id.DestArticle);
+                else if(selectedId == R.id.DestArticleList){
+                    navController.navigate(R.id.DestArticleList);
                 }
                 else if (selectedId == R.id.DestScreenRecord){
                     // Pass the startTime to the fragment
@@ -104,10 +104,7 @@ public class HomeActivity extends AppCompatActivity {
                     navController.navigate(R.id.DestScreenRecord,bundle);
                 }
                 else if(selectedId == R.id.DestNotifications){
-                    // Pass the startTime to the fragment
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("startTime", startTime);
-                    navController.navigate(R.id.DestNotifications,bundle);
+                    navController.navigate(R.id.DestNotifications);
                 }
                 else if (selectedId == R.id.DestLogout){
                     // Stop tracking screen time

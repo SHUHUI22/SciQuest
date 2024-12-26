@@ -91,8 +91,6 @@ public class ForumDiscussionActivity extends AppCompatActivity {
         });
 
         close.setOnClickListener(v -> {
-//            NavController navController = Navigation.findNavController(this, R.id.DestForum);
-//            navController.navigate(R.id.DestForum); // Navigate back to Forum
             onBackPressed();
         });
 

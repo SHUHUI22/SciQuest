@@ -7,4 +7,13 @@
     <color name="green">#00E676</color>
     <color name="red">#FC1D1D</color>
     <color name="lightGreen">#E8F5E9</color>
+    <color name="blue">#304ffe</color>
+    <color name="purple">#673ab7</color>
+    <color name="orange">#ff9800</color>
+    <color name="grey">#9e9e9e</color>
+    <color name="lightGrey">#e0e0e0</color>
+    <color name="yellow">#fff176</color>
+    <color name="lightBlue">#bbdefb</color>
+    <color name="lightPurple">#d1c4e9</color>
+
 </resources>

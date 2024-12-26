@@ -40,10 +40,10 @@
         android:label="fragment_quiz"
         tools:layout="@layout/fragment_quiz_list" />
     <fragment
-        android:id="@+id/DestArticle"
-        android:name="com.example.sciquest.ArticleFragment"
+        android:id="@+id/DestArticleList"
+        android:name="com.example.sciquest.ArticleListFragment"
         android:label="fragment_article"
-        tools:layout="@layout/fragment_article" />
+        tools:layout="@layout/fragment_article_list" />
     <fragment
         android:id="@+id/DestStartQuiz"
         android:name="com.example.sciquest.StartQuizFragment"
@@ -74,4 +74,14 @@
         android:name="com.example.sciquest.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" />
+    <fragment
+        android:id="@+id/DestViewNotification"
+        android:name="com.example.sciquest.ViewNotificationFragment"
+        android:label="fragment_message"
+        tools:layout="@layout/fragment_view_notification" />
+    <fragment
+        android:id="@+id/DestArticle"
+        android:name="com.example.sciquest.ArticleFragment"
+        android:label="fragment_article"
+        tools:layout="@layout/fragment_article" />
 </navigation>

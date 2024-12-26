@@ -9,6 +9,38 @@
     <string name="error_empty_age">Age cannot be empty.</string>
     <string name="error_empty_gender">Please select a gender.</string>
     <string name="error_invalid_password">Passwords must be at least 8 characters long and include at least 1 uppercase letter, 1 lowercase letter, and 1 digit."</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Font Sizes -->
+    <string-array name="font_sizes">
+        <item>12px</item>
+        <item>14px</item>
+        <item>16px</item>
+        <item>18px</item>
+        <item>20px</item>
+        <item>22px</item>
+        <item>24px</item>
+    </string-array>
+
+    <!-- Font Colors -->
+    <string-array name="font_colors">
+        <item>Black Text</item>
+        <item>Red Text</item>
+        <item>Green Text</item>
+        <item>Blue Text</item>
+        <item>Purple Text</item>
+        <item>Orange Text</item>
+        <item>Grey Text</item>
+    </string-array>
+
+    <!-- Background Colors -->
+    <string-array name="bg_colors">
+        <item>White Bg</item>
+        <item>Light Grey Bg</item>
+        <item>Black Bg</item>
+        <item>Yellow Bg</item>
+        <item>Light Blue Bg</item>
+        <item>Light Purple Bg</item>
+        <item>Peach Bg</item>
+    </string-array>
+
 </resources>

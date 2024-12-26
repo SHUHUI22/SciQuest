@@ -144,16 +144,14 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
         badgeManager.updateBadges(userId, new BadgeManager.OnStreakCalculatedListener() {
             @Override
             public void onStreakCalculated(boolean isConsecutive) {
-                // You can pass additional logic here if necessary, for example:
-                if (isConsecutive) {
-                    // Call the method to fetch badges
-                    badgeManager.fetchBadges(userId, new BadgeManager.OnBadgesFetchedListener() {
-                        @Override
-                        public void onBadgesFetched(List<String> badges) {
-                            displayBadges(badges);
-                        }
-                    });
+
+            badgeManager.fetchBadges(userId, new BadgeManager.OnBadgesFetchedListener() {
+                @Override
+                public void onBadgesFetched(List<String> badges) {
+                    displayBadges(badges);
                 }
+            });
+
             }
         });
 

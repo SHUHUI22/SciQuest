@@ -22,7 +22,6 @@ public class BadgeManager {
     private FirebaseFirestore db = FirebaseFirestore.getInstance() ;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
-    private boolean loadNotification = false;
 
     // Listener for streak calculation
     public interface OnStreakCalculatedListener {
@@ -76,12 +75,6 @@ public class BadgeManager {
                             break;
                         }
                     }
-
-//                    if (isConsecutive) {
-//                        // If the user has achieved a consecutive 7-day streak
-//                        updateBadgeCount(userId);
-//                    }
-
                     listener.onStreakCalculated(isConsecutive);
                 });
     }
@@ -106,11 +99,10 @@ public class BadgeManager {
 
                         // Only award the badge if 7 days have passed
                         if (diffInDays >= 7) {
-                            loadNotification = true;
                             // Update the badge earned date and increment streak count
                             badgeRef.update("last7streakBadgeEarnedDate", today);
 
-                            // Optionally, increment streak count
+                            //increment streak count
                             long current7StreakCount = documentSnapshot.getLong("7streakCount") != null
                                     ? documentSnapshot.getLong("7streakCount")
                                     : 0;
@@ -118,15 +110,11 @@ public class BadgeManager {
                             badgeRef.update("7streakCount", current7StreakCount + 1);
                             addNotification();
                         }
-//                        else {
-//                            loadNotification = false;
-//                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             } else {
-//                loadNotification = true;
                 // If no badge document exists, create one and set first badge date
                 badgeRef.set(new HashMap<String, Object>() {{
                     put("last7streakBadgeEarnedDate", new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
@@ -135,9 +123,6 @@ public class BadgeManager {
                 addNotification();
             }
         });
-//        if (loadNotification){
-//            addNotification();
-//        }
     }
 
     // Method to fetch badges based on streak count and quiz completion

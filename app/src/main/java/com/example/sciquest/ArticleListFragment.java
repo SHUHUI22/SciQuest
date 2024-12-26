@@ -18,13 +18,13 @@ import com.example.sciquest.Model.Topic;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuizListFragment extends Fragment {
+public class ArticleListFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TopicAdapter adapter;
-    private List<Topic> quizList;
+    private List<Topic> articleList;
 
-    public QuizListFragment() {
+    public ArticleListFragment() {
         // Required empty public constructor
     }
 
@@ -32,7 +32,7 @@ public class QuizListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_quiz_list, container, false);
+        return inflater.inflate(R.layout.fragment_article_list, container, false);
     }
 
     @Override
@@ -45,26 +45,24 @@ public class QuizListFragment extends Fragment {
         }
 
         // Initialize RecyclerView
-        recyclerView = view.findViewById(R.id.recyclerViewQuiz); // Connect RecyclerView from XML
+        recyclerView = view.findViewById(R.id.recyclerViewArticle); // Connect RecyclerView from XML
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // Linear layout for vertical list
 
-        // Initialize quiz topics data
-        quizList = getQuizList();
+        // Initialize topics data
+        articleList = getArticleList();
 
         // Set up RecyclerView with adapter and click listener
-        adapter = new TopicAdapter(quizList, topic -> {
-            // Handle click events and pass data to StartQuizFragment
+        adapter = new TopicAdapter(articleList, topic -> {
             Bundle bundle = new Bundle();
-            bundle.putString("topic_name", topic.getTopic());
-            bundle.putInt("image_resource", topic.getImageResID());
+            bundle.putString("topicTitle", topic.getTopic());
 
-            NavHostFragment.findNavController(QuizListFragment.this)
-                    .navigate(R.id.DestStartQuiz, bundle);
+            NavHostFragment.findNavController(ArticleListFragment.this)
+                    .navigate(R.id.DestArticle, bundle);
         });
         recyclerView.setAdapter(adapter); // Attach the adapter to RecyclerView
     }
 
-    private List<Topic> getQuizList() {
+    private List<Topic> getArticleList() {
         List<Topic> list = new ArrayList<>(); // Create an empty list
 
         // Add quiz topics with titles and images
