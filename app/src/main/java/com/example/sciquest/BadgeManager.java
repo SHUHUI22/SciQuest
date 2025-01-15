@@ -114,6 +114,14 @@ public class BadgeManager {
                         e.printStackTrace();
                     }
                 }
+                // If badge document exists, no first badge date earned
+                if (last7streakBadgeEarnedDate==null)  {
+                    badgeRef.set(new HashMap<String, Object>() {{
+                        put("last7streakBadgeEarnedDate", new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
+                        put("7streakCount", 1); // First streak
+                    }});
+                    addNotification();
+                }
             } else {
                 // If no badge document exists, create one and set first badge date
                 badgeRef.set(new HashMap<String, Object>() {{

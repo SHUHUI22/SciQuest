@@ -199,6 +199,7 @@ public class ReviewFragment extends Fragment {
 
     }
 
+    // Highlight user's selected option
     private void highlightSelectedOption(String selectedOption, String correctAnswer,boolean isCorrect) {
         if (!isCorrect&&selectedOption!=null) {
             border.setStroke(8, getResources().getColor(R.color.red));

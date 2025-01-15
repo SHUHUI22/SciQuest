@@ -97,7 +97,7 @@ public class EditProfileFragment extends Fragment {
                 // Perform updates if there are changes
                 if (!updates.isEmpty()) {
                     updateFirestore(userID, updates);
-                    Toast.makeText(requireContext(), "Profile update successfully.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(requireContext(), "Profile update successfully.", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Toast.makeText(requireContext(), "No changes to update.", Toast.LENGTH_SHORT).show();

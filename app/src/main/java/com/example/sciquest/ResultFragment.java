@@ -64,6 +64,7 @@ public class ResultFragment extends Fragment {
         // Obtain NavController
         NavController navController = Navigation.findNavController(requireActivity(), R.id.NHFMain);// Obtain NavController
 
+        // Reattempt quiz
         BtnReattempt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,6 +77,7 @@ public class ResultFragment extends Fragment {
             }
         });
 
+        // Back
         BtnBackToQuizList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,6 +86,7 @@ public class ResultFragment extends Fragment {
             }
         });
 
+        // Review answer
         BtnReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

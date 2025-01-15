@@ -273,5 +273,4 @@ public class ArticleFragment extends Fragment {
             }
         }
     }
-
 }

@@ -154,6 +154,7 @@ public class QuizFragment extends Fragment {
         });
     }
 
+    // Fetch question from question bank
     private void fetchQuestion(String topic) {
         db.collection("QuestionBank")
                 .document(topic)
@@ -180,6 +181,7 @@ public class QuizFragment extends Fragment {
                 });
     }
 
+    // Update question on UI
     private void updateQuestionView() {
         if (isAdded()) {
             currentQuestion = questions.get(currentQueIndex);
@@ -220,6 +222,7 @@ public class QuizFragment extends Fragment {
         }
     }
 
+    // Timer
     private void startTimer() {
         PBTimer.setMax(25); // Set max value
         PBTimer.setProgress(25); // Initialize progress
@@ -249,6 +252,7 @@ public class QuizFragment extends Fragment {
         Timer.start();
     }
 
+    // Highlight correct answer
     private void highlightCorrectAnswer() {
         if (isAdded()) {
             if (BtnOpt1.getText().toString().equals(correctAnswer)) {
@@ -274,6 +278,7 @@ public class QuizFragment extends Fragment {
         BtnOpt4.setBackgroundColor(getResources().getColor(R.color.primaryColor));
     }
 
+    // Check user's selected answer with correct answer
     private void checkAnswer(Button selectedButton) {
         if (questionPass[currentQueIndex]){
             return;
@@ -328,6 +333,7 @@ public class QuizFragment extends Fragment {
         }
     }
 
+    // Save user attempt history to database
     private void saveQuizAttempt() {
         String userId = user.getUid();
         DocumentReference attemptRef = db.collection("QuizAttempt")
@@ -407,6 +413,7 @@ public class QuizFragment extends Fragment {
         return answerList;
     }
 
+    // Award badge if user's mark >= 80
     private void awardBadge() {
         String userId = user.getUid();
         DocumentReference badgeRef = db.collection("Badge").document(userId);
@@ -444,6 +451,7 @@ public class QuizFragment extends Fragment {
         });
     }
 
+    // Notify user they have unlocked a badge
     private void addNotification(String title, long score) {
         String userId = user.getUid();
 

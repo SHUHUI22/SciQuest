@@ -94,7 +94,9 @@ public class ScreenManager {
                     // If no previous data exists, create the new document with the initial screen time
                     Map<String, Object> newScreenTime = new HashMap<>();
                     newScreenTime.put("time", screenTimeInMinutes);  // Set screen time for the first time
-
+                    System.out.println("here"+screenTimeInMinutes);
+                    System.out.println(date);
+                    System.out.println(userId);
                     // Save the new screen time data
                     screenTimeRef.set(newScreenTime)
                             .addOnSuccessListener(aVoid -> {
@@ -102,11 +104,13 @@ public class ScreenManager {
                             })
                             .addOnFailureListener(e -> {
                                 // Failed to save data
+                                Log.e("Error", "Failed to save screen time: ", e);
                                 Toast.makeText(context, "Failed to save screen time", Toast.LENGTH_SHORT).show();
                             });
                 }
             } else {
                 // Error occurred while fetching data
+                Log.e("Error", "Failed to fetch screen time data", task.getException());
                 Toast.makeText(context, "Error fetching screen time data", Toast.LENGTH_SHORT).show();
             }
         });

@@ -76,6 +76,7 @@ public class NotificationFragment extends Fragment {
         }
     }
 
+    // Method to mark all notifications as read
     private void markAllNotificationsAsReadInFirestore() {
         String userId = user.getUid();
         CollectionReference notificationRef = db.collection("Notification").document(userId).collection("UserNotifications");
@@ -100,6 +101,7 @@ public class NotificationFragment extends Fragment {
         });
     }
 
+    // Method to load notification on UI
     private void loadNotifications() {
         String userId = user.getUid();
         CollectionReference notificationRef = db.collection("Notification").document(userId).collection("UserNotifications");

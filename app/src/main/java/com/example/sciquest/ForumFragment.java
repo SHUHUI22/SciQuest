@@ -21,12 +21,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import com.google.firebase.firestore.FieldPath;
 
 public class ForumFragment extends Fragment {
 
@@ -86,65 +92,75 @@ public class ForumFragment extends Fragment {
 
     private void fetchPosts() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Step 1: Fetch all posts
         db.collection("Posts")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         postList.clear();
+                        List<Post> tempPostList = new ArrayList<>();
+                        Set<String> userIds = new HashSet<>();
+
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String postId = document.getString("postId");
                             String description = document.getString("description");
                             String publisher = document.getString("publisher");
                             String postImageUrl = document.getString("imageUrl");
 
-                            // Ensure that likeCount and commentCount are fetched and properly converted to long
-                            long likeCount = 0;
-                            if (document.contains("likeCount")) {
-                                Number likeCountNumber = document.getLong("likeCount");
-                                if (likeCountNumber != null) {
-                                    likeCount = likeCountNumber.longValue();
-                                }
-                            }
-
-                            long commentCount = 0;
-                            if (document.contains("commentCount")) {
-                                Number commentCountNumber = document.getLong("commentCount");
-                                if (commentCountNumber != null) {
-                                    commentCount = commentCountNumber.longValue();
-                                }
-                            }
-
+                            long likeCount = document.contains("likeCount") ? document.getLong("likeCount") : 0;
+                            long commentCount = document.contains("commentCount") ? document.getLong("commentCount") : 0;
                             long timeStamp = document.getLong("timestamp") != null ? document.getLong("timestamp") : 0;
 
+                            // Add publisher to the set for user data fetching
+                            userIds.add(publisher);
 
-                            // Create a new Post object and set basic post data
+                            // Create a Post object
                             Post post = new Post(postId, description, publisher, postImageUrl);
                             post.setLikeCount(likeCount);
                             post.setCommentCount(commentCount);
                             post.setTimestamp(timeStamp);
 
-                            // Fetch user data for the publisher
-                            db.collection("Users").document(publisher)
-                                    .get()
-                                    .addOnCompleteListener(userTask -> {
-                                        if (userTask.isSuccessful() && userTask.getResult() != null) {
-                                            DocumentSnapshot userDoc = userTask.getResult();
+                            tempPostList.add(post);
+                        }
+
+                        // Step 2: Fetch user data in bulk
+                        db.collection("Users")
+                                .whereIn(FieldPath.documentId(), new ArrayList<>(userIds))
+                                .get()
+                                .addOnCompleteListener(userTask -> {
+                                    if (userTask.isSuccessful()) {
+                                        Map<String, Map<String, String>> userMap = new HashMap<>();
+
+                                        for (DocumentSnapshot userDoc : userTask.getResult()) {
+                                            String userId = userDoc.getId();
                                             String username = userDoc.getString("username");
-                                            String profileImageUrl = userDoc.getString("profilePictureUrl");
+                                            String profilePictureUrl = userDoc.getString("profilePictureUrl");
 
-                                            post.setUsername(username);
-                                            post.setProfilePictureUrl(profileImageUrl);
-                                            post.setPublisher(username);
+                                            Map<String, String> userData = new HashMap<>();
+                                            userData.put("username", username);
+                                            userData.put("profilePictureUrl", profilePictureUrl);
 
-                                            // Add the post to the list
-                                            postList.add(post);
+                                            userMap.put(userId, userData);
                                         }
 
-                                        // Update the adapter
+                                        // Step 3: Merge user data with posts
+                                        for (Post post : tempPostList) {
+                                            Map<String, String> userData = userMap.get(post.getPublisher());
+                                            if (userData != null) {
+                                                post.setUsername(userData.get("username"));
+                                                post.setProfilePictureUrl(userData.get("profilePictureUrl"));
+                                            }
+                                        }
+
+                                        // Step 4: Update the adapter
+                                        postList.addAll(tempPostList);
                                         postAdapter.setPosts(postList);
-                                    });
-                        }
+                                    } else {
+                                        Toast.makeText(getContext(), "Error fetching user data", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     } else {
                         Toast.makeText(getContext(), "Error fetching posts", Toast.LENGTH_SHORT).show();
                     }

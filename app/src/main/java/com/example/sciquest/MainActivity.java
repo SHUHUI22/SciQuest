@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         BtnLogin = findViewById(R.id.BtnLogin);
         BtnSignUp = findViewById(R.id.BtnSignUp);
 
+        // Navigate to login page
         BtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Navigate to signup page
         BtnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

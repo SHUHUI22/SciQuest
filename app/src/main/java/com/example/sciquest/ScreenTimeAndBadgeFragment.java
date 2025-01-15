@@ -101,7 +101,7 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
                 if (calendarView.getVisibility() == View.GONE) {
                     IVScreen.setVisibility(View.GONE);
                     calendarView.setVisibility(View.VISIBLE);
-                    TVScreenDescription2.setText("this week.");
+                    TVScreenDescription2.setText("in a week.");
                     TVDate.setText("Weekly Report");
 
                     Long currentTime = System.currentTimeMillis();
@@ -161,6 +161,7 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
         }
     }
 
+    // Method to calculate daily screen time
     private void calculateDailyScreenTime(String userId, String currentDate, long startTime) {
         screenManager.getScreenTimeForDate(userId, currentDate,new ScreenManager.OnScreenTimeFetchedListener() {
             @Override
@@ -176,6 +177,7 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
         });
     }
 
+    // Method to calculate weekly screen time
     private void calculateWeeklyScreenTime(String userId,OnWeeklyScreenTimeListener listener) {
         List<String> last7Days = getLast7DaysDates(); // Helper method to get last 7 days
         AtomicLong totalScreenTime = new AtomicLong(0);
@@ -186,11 +188,7 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
                 @Override
                 public void onScreenTimeFetched(Long screenTime) {
                     totalScreenTime.addAndGet(screenTime);
-
-                    // Check if all 7 days have been processed
-                    if (date.equals(last7Days.get(last7Days.size() - 1))) {
-                        listener.onWeeklyScreenTimeCalculated(totalScreenTime.get());
-                    }
+                    listener.onWeeklyScreenTimeCalculated(totalScreenTime.get());
                 }
             });
         }
@@ -212,6 +210,7 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
         void onWeeklyScreenTimeCalculated(long weeklyScreenTime);
     }
 
+    // Method to display the badge obtained
     private void displayBadges(List<String> badges) {
         // Clear the previous badges
         LinearLayoutBadge.removeAllViews();
@@ -234,6 +233,7 @@ public class ScreenTimeAndBadgeFragment extends Fragment {
         }
     }
 
+    // Notify user to take rest when they use the app for 2 hours
     private void addNotification(Long totalDailyScreenTime, boolean update) {
         if (totalDailyScreenTime>=120 && update == true){
             String userId = user.getUid();
